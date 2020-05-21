@@ -1,0 +1,25 @@
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+
+#Get Machine Name
+$machine_Name = $env:COMPUTERNAME
+
+#Check for path exists
+if (Test-Path #path to recovery key folder location\$machine_Name)
+    {
+    # Remove directory if path exists
+    rm -Recurse -Force #path to recovery key folder location\$machine_Name
+    }
+
+#Create Directory for Recovery Key
+New-Item -Path "#path to recovery key folder location" -Name $machine_Name -ItemType "directory" 
+
+#Set Machine Directory as File Server URL with Machine Name
+$machine_Directory = "#path to recovery key folder location" + $machine_Name
+
+#Create text file to contain recovery password string
+New-Item #path to recovery key folder location\$machine_Name\${machine_Name}-Recovery-Password.txt
+
+#Enable Encryption and store in file in directory specified
+manage-bde -on C: -rp | Out-File -FilePath #path to recovery key folder location\$machine_Name\${machine_Name}-Recovery-Password.txt
+
+Start-Sleep -seconds 30
